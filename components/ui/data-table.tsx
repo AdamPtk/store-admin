@@ -23,11 +23,13 @@ import {
 } from '@/components/ui/table';
 
 interface DataTableProps<TData, TValue> {
+  searchKey: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
 export function DataTable<TData, TValue>({
+  searchKey,
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -49,10 +51,10 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter labels..."
-          value={(table.getColumn('label')?.getFilterValue() as string) ?? ''}
+          placeholder={`Filter ${searchKey}s...`}
+          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('label')?.setFilterValue(event.target.value)
+            table.getColumn(searchKey)?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
