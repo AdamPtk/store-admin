@@ -1,4 +1,4 @@
-import { CreditCard, DollarSign } from 'lucide-react';
+import { CreditCard, DollarSign, Layers } from 'lucide-react';
 
 import Overview from '@/components/overview';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,7 +53,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
               <CardTitle className="text-sm font-medium">
                 Products In Stock
               </CardTitle>
-              <CreditCard className="w-4 h-4 text-muted-foreground" />
+              <Layers className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl">{stockCount}</div>
