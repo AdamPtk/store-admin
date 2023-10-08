@@ -34,6 +34,7 @@ export async function POST(req: Request) {
   ];
 
   const addressString = addressComponents.filter((c) => c !== null).join(', ');
+  console.log(session?.customer_details);
 
   if (event.type === 'checkout.session.completed') {
     const order = await prismadb.order.update({
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
       data: {
         isPaid: true,
         address: addressString,
+        email: session?.customer_details?.email || '',
         phone: session?.customer_details?.phone || '',
       },
       include: {
