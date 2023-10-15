@@ -54,41 +54,42 @@ export async function POST(req: Request) {
 
     const productIds = order.orderItems.map((orderItem) => orderItem.productId);
 
-    const stockProducts = await prismadb.product.findMany({
-      where: {
-        id: {
-          in: [...productIds],
-        },
-      },
-    });
-
-    order.orderItems.forEach(async (orderItem) => {
-      const product = stockProducts.find(
-        (product) => product.id === orderItem.productId,
-      );
-      if (product) {
-        await prismadb.product.update({
-          where: {
-            id: orderItem.productId,
-          },
-          data: {
-            quantity: product.quantity - orderItem.quantity,
-            isArchived: product.quantity - orderItem.quantity <= 0,
-          },
-        });
-      }
-    });
-
-    // await prismadb.product.updateMany({
+    // const stockProducts = await prismadb.product.findMany({
     //   where: {
     //     id: {
     //       in: [...productIds],
     //     },
     //   },
-    //   data: {
-    //     isArchived: true,
-    //   },
     // });
+
+    // order.orderItems.forEach(async (orderItem) => {
+    //   const product = stockProducts.find(
+    //     (product) => product.id === orderItem.productId,
+    //   );
+    //   if (product) {
+    //     await prismadb.product.update({
+    //       where: {
+    //         id: orderItem.productId,
+    //       },
+    //       data: {
+    //         quantity: product.quantity - orderItem.quantity,
+    //         isArchived: product.quantity - orderItem.quantity <= 0,
+    //       },
+    //     });
+    //   }
+    // });
+
+    await prismadb.product.updateMany({
+      where: {
+        id: {
+          in: [...productIds],
+        },
+      },
+      data: {
+        quantity: 1,
+        // isArchived: true,
+      },
+    });
   }
 
   return new NextResponse('OK', { status: 200 });
