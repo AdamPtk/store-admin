@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 import prismadb from '@/lib/prismadb';
 import { stripe } from '@/lib/stripe';
+import { Product } from '@/types';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -23,30 +24,23 @@ export async function POST(
   req: Request,
   { params }: { params: { storeId: string } },
 ) {
-  const { productIds } = await req.json();
+  const { productIds, orderProducts } = await req.json();
 
-  if (!productIds || productIds.length === 0) {
-    return new NextResponse('Missing productIds', { status: 400 });
+  if (!orderProducts || orderProducts.length === 0) {
+    return new NextResponse('Missing products', { status: 400 });
   }
-  const products = await prismadb.product.findMany({
-    where: {
-      id: {
-        in: productIds,
-      },
-    },
-  });
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
-  products.forEach((product) => {
+  orderProducts.forEach((product: Product) => {
     line_items.push({
-      quantity: 1,
+      quantity: product.cartQuantity || 1,
       price_data: {
         currency: 'usd',
         product_data: {
           name: product.name,
         },
-        unit_amount: product.price.toNumber() * 100,
+        unit_amount: product.price * 100,
       },
     });
   });
@@ -62,6 +56,9 @@ export async function POST(
               id: productId,
             },
           },
+          quantity:
+            orderProducts.find((product: Product) => product.id === productId)
+              .cartQuantity || 1,
         })),
       },
     },

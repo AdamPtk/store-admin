@@ -14,6 +14,7 @@ export async function POST(
     const {
       name,
       price,
+      quantity,
       categoryId,
       colorId,
       sizeId,
@@ -36,6 +37,10 @@ export async function POST(
 
     if (!price) {
       return new NextResponse('Price is required', { status: 400 });
+    }
+
+    if (!quantity) {
+      return new NextResponse('Quantity is required', { status: 400 });
     }
 
     if (!categoryId) {
@@ -66,6 +71,7 @@ export async function POST(
       data: {
         name,
         price,
+        quantity,
         categoryId,
         colorId,
         sizeId,
@@ -122,7 +128,17 @@ export async function GET(
       },
     });
 
-    return NextResponse.json(products);
+    const response = NextResponse.json(products);
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set(
+      'Access-Control-Allow-Methods',
+      'GET,HEAD,POST,OPTIONS',
+    );
+    response.headers.set(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization',
+    );
+    return response;
   } catch (error) {
     console.log('[PRODUCTS_GET]', error);
     return new NextResponse('Internal error', { status: 500 });
