@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
     order.orderItems.forEach(async (orderItem) => {
       const product = stockProducts.find(
-        (product) => product.id === orderItem.id,
+        (product) => product.id === orderItem.productId,
       );
       if (product) {
         await prismadb.product.update({
