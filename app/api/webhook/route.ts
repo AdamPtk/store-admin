@@ -62,14 +62,14 @@ export async function POST(req: Request) {
       },
     });
 
-    order.orderItems.forEach((orderItem) => {
+    order.orderItems.forEach(async (orderItem) => {
       const product = stockProducts.find(
         (product) => product.id === orderItem.id,
       );
       if (product) {
-        prismadb.product.update({
+        await prismadb.product.update({
           where: {
-            id: orderItem.id,
+            id: orderItem.productId,
           },
           data: {
             quantity: product.quantity - orderItem.quantity,
